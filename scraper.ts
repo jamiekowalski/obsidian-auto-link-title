@@ -22,24 +22,22 @@ async function electronGetPageTitle(url: string): Promise<string> {
   const { remote } = electronPkg;
   const { BrowserWindow } = remote;
 
-  try {
-    const window = new BrowserWindow({
-      width: 1000,
-      height: 600,
-      webPreferences: {
-        webSecurity: false,
-        nodeIntegration: true,
-        images: false,
-      },
-      show: false,
-    });
+  const window = new BrowserWindow({
+    width: 1000,
+    height: 600,
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      images: false,
+    },
+    show: false,
+  });
 
+  try {
     await load(window, url);
 
     try {
       const title = window.webContents.getTitle();
-      window.destroy();
-
       if (notBlank(title)) {
         return title;
       } else {
@@ -51,6 +49,8 @@ async function electronGetPageTitle(url: string): Promise<string> {
   } catch (ex) {
     console.error(ex);
     return "Site Unreachable";
+  } finally {
+    window.destroy();
   }
 }
 
